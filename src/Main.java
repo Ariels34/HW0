@@ -103,19 +103,18 @@ public class Main {
      * @param m num of columns in board
      */
     public static void printBoard(char[][] boardChar, int n ,int m){
+        System.out.print("  ");
         for(int i = 0; i < m; i++){
-            if(i == 0){
-                System.out.print(" ");
-            }
-            else{
-                System.out.print(i-1);
-            }
-            for(int j = 0; j < n; j++){
-                if(i == 0){
-                    System.out.print(" " + j);
+            System.out.print(i+" ");
+        }
+        System.out.println();
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n+1; j++){
+                if(j==0){
+                    System.out.print(i);
                 }
                 else{
-                    System.out.print(" " + boardChar[i][j]);
+                    System.out.print(" "+boardChar[i][j-1]);
                 }
             }
             System.out.println();
