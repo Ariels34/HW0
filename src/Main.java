@@ -7,7 +7,13 @@ import java.util.Scanner;
 public class Main {
     public static Scanner scanner;
     public static Random rnd;
-    public static final int ZERO_ASCII = 48;
+    public static final char NO_SHIP = '–';
+    public static final char SHIP = '#';
+    public static final char HIT = 'V';
+    public static final char MISS = 'X';
+
+
+
 
     /**
      * This method gets the board and the battleships amount and sizes
@@ -17,8 +23,8 @@ public class Main {
         System.out.println("Enter the board size");
         String size = scanner.nextLine();
         String[] newSize = size.split("X");
-        int n = (int)(newSize[0].charAt(0)) - ZERO_ASCII;
-        int m = (int)(newSize[1].charAt(0)) - ZERO_ASCII;
+        int n = (int)(Integer.parseInt(newSize[0]));
+        int m = (int)(Integer.parseInt(newSize[1]));
         System.out.println("Enter the battleships sizes");
         String battleships = scanner.nextLine();
         int max = 0;
@@ -26,8 +32,8 @@ public class Main {
         int[][] newSizes = new int[sizes.length][2];
         for(int i = 0; i < sizes.length; i++){
             String[] temp = sizes[i].split("X");
-            newSizes[i][0] = (int)(temp[0].charAt(0))-ZERO_ASCII;
-            newSizes[i][1] = (int)(temp[1].charAt(0))-ZERO_ASCII;
+            newSizes[i][0] = Integer.parseInt(temp[0]);
+            newSizes[i][1] = Integer.parseInt(temp[1]);
         }
         for(int i = 0; i < newSizes.length; i++){
             if(max < newSizes[i][1])
@@ -37,7 +43,10 @@ public class Main {
         for(int i = 1; i < newSizes.length; i++) {
             arrShips[newSizes[i][1]] = newSizes[i][0];
         }
-        shipLocation(arrShips, n, m);
+        arrShips[max+1] = n;
+        arrShips[max+2] = m;
+        return arrShips;
+
     }
 
     /**
@@ -91,14 +100,14 @@ public class Main {
      * @param m num of columns in board
      */
     public static void printBoard(char[][] boardChar, int n ,int m){
-        for(int i = 0; i < 11; i++){
+        for(int i = 0; i < m; i++){
             if(i == 0){
                 System.out.print(" ");
             }
             else{
                 System.out.print(i-1);
             }
-            for(int j = 0; j < 10; j++){
+            for(int j = 0; j < n; j++){
                 if(i == 0){
                     System.out.print(" " + j);
                 }
@@ -120,7 +129,7 @@ public class Main {
         char[][] boardChar = new char[n][m];
         for (int i = 0; i < n; i++) { //til 75 meth
             for (int j = 0; j < m; j++) {
-                boardChar[i][j] = '–';
+                boardChar[i][j] = NO_SHIP;
             }
         }
         return boardChar;
@@ -139,14 +148,14 @@ public class Main {
     public static boolean adjCheckLoop(char[][] boardChar,int n, int m, int orientation, int j, int k){
         if (orientation == 0) {
             if(inBounds(j-1,k,n,m) && inBounds(j+1,k,n,m)) {
-                if (boardChar[j - 1][k] !='–' || boardChar[j + 1][k] != '–'){
+                if (boardChar[j - 1][k] !=NO_SHIP || boardChar[j + 1][k] != NO_SHIP){
                     return true;
                 }
             }
         }
         else {
             if(inBounds(j,k+1,n,m) && inBounds(j,k-1,n,m)) {
-                if (boardChar[j][k + 1] != '–' || boardChar[j][k - 1] != '–') {
+                if (boardChar[j][k + 1] != NO_SHIP || boardChar[j][k - 1] != NO_SHIP) {
                     return true;
                 }
             }
@@ -170,12 +179,12 @@ public class Main {
         if(orientation == 0){
             for(int j = -1; j < 2; j++){
                 if(inBounds(x+j,y-1,n,m)){
-                    if(boardChar[x+j][y-1] != '–'){
+                    if(boardChar[x+j][y-1] != NO_SHIP){
                         return true;
                     }
                 }
                 if(inBounds(x+j,endShipY+1,n,m)){
-                    if(boardChar[x+j][endShipY+1] != '–'){
+                    if(boardChar[x+j][endShipY+1] != NO_SHIP){
                         return true;
                     }
                 }
@@ -184,12 +193,12 @@ public class Main {
         if(orientation == 1){
             for(int j = -1; j < 2; j++){
                 if(inBounds(x-1,y+j,n,m)){
-                    if(boardChar[x-1][y+j] != '–'){
+                    if(boardChar[x-1][y+j] != NO_SHIP){
                         return true;
                     }
                 }
                 if(inBounds(endShipX+1,y+j,n,m)){
-                    if(boardChar[endShipX+1][y+j] != '–'){
+                    if(boardChar[endShipX+1][y+j] != NO_SHIP){
                         return true;
                     }
                 }
@@ -233,16 +242,18 @@ public class Main {
         return false;
     }
 
-    public static void shipLocation(int[] arrShips, int n, int m) {
+
+    public static char[][] shipLocation(int[] arrShips, int n, int m) {
         char[][] boardChar = initializeBoard(n,m);
         printBoard(boardChar, n, m);
         for (int i = 1; i < arrShips.length; i++) {
             while (arrShips[i] > 0) {
                 System.out.println("Enter the location and orientation for battleship of size " + i);
                 String place = scanner.nextLine();
-                int x = (int) place.charAt(0) - ZERO_ASCII;
-                int y = (int) place.charAt(2) - ZERO_ASCII;
-                int orientation = (int) place.charAt(4) - ZERO_ASCII;
+                String[] newPlace = place.split(", ");
+                int x = Integer.parseInt(newPlace[0]);
+                int y = Integer.parseInt(newPlace[1]);
+                int orientation = Integer.parseInt(newPlace[2]);
                 int endShipX = x, endShipY = y;
                 switch (orientation) {
                     case 0: {
@@ -256,13 +267,13 @@ public class Main {
                 if (error) {
                     continue;
                 }
-                //todo add method
-                error = isLegalPlacement(endShipX,endShipY, x, y,orientation, n, m, boardChar);
+
+                error = isLegalPlacement(endShipX,endShipY, x, y,orientation, n, m, boardChar,true);
 
                 if (!error) {
                     for (int j = x; j <= endShipX; j++) {
                         for (int k = y; k <= endShipY; k++) {
-                            boardChar[j][k] = '#';
+                            boardChar[j][k] = SHIP;
                         }
                     }
                 }
@@ -431,8 +442,38 @@ public class Main {
 
 
     public static void battleshipGame() {
-        // TODO: Add your code here (and add more methods).
+        int numOfShips = 0;
+        int[] arr = getBoard();
+        int n = arr[arr.length-2];
+        int m = arr[arr.length-1];
+        int[] arrShips = new int[arr.length-2];
+        for(int i = 0; i < arrShips.length; i++){
+            arrShips[i] = arr[i];
+            numOfShips += arr[i];
+        }
+        int numOfShipsComputer = numOfShips;
+        int numOfShipsPlayer = numOfShips;
+        char[][] gameBoardPlayer = shipLocation(arrShips, n, m);
+        char[][] gameBoardComputer = shipLocationComputer(arrShips, n, m);
+        char[][] guessingBoardPlayer = initializeBoard(n,m);
+        char[][] guessingBoardComputer = initializeBoard(n,m);
+        while(true) {
+            numOfShipsComputer = playerTurn(guessingBoardPlayer, n, m, gameBoardComputer, numOfShipsComputer);
+            if (numOfShipsComputer == 0) {
+                System.out.println("You won the game!");
+                break;
+            }
+            numOfShipsPlayer = computerTurn(guessingBoardComputer, n, m, gameBoardPlayer, numOfShipsPlayer);
+            if (numOfShipsPlayer == 0) {
+                System.out.println("You lost ):");
+                break;
+            }
+            System.out.println("Your current game board: ");
+            printBoard(gameBoardPlayer, n, m);
+        }
     }
+
+
 
 
     public static void main(String[] args) throws IOException {
