@@ -35,14 +35,17 @@ public class Main {
             newSizes[i][0] = Integer.parseInt(temp[0]);
             newSizes[i][1] = Integer.parseInt(temp[1]);
         }
+
+
         for(int i = 0; i < newSizes.length; i++){
-            if(max < newSizes[i][1])
+            if(max <= newSizes[i][1])
                 max = newSizes[i][1];
         }
         int[] arrShips = new int[max+3];
-        for(int i = 1; i < newSizes.length; i++) {
+        for(int i = 0; i < newSizes.length; i++) {
             arrShips[newSizes[i][1]] = newSizes[i][0];
         }
+
         arrShips[max+1] = n;
         arrShips[max+2] = m;
         return arrShips;
@@ -100,19 +103,18 @@ public class Main {
      * @param m num of columns in board
      */
     public static void printBoard(char[][] boardChar, int n ,int m){
+        System.out.print("  ");
         for(int i = 0; i < m; i++){
-            if(i == 0){
-                System.out.print(" ");
-            }
-            else{
-                System.out.print(i-1);
-            }
-            for(int j = 0; j < n; j++){
-                if(i == 0){
-                    System.out.print(" " + j);
+            System.out.print(i+" ");
+        }
+        System.out.println();
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n+1; j++){
+                if(j==0){
+                    System.out.print(i);
                 }
                 else{
-                    System.out.print(" " + boardChar[i][j]);
+                    System.out.print(" "+boardChar[i][j-1]);
                 }
             }
             System.out.println();
@@ -127,7 +129,7 @@ public class Main {
      */
     public static char[][] initializeBoard(int n, int m){
         char[][] boardChar = new char[n][m];
-        for (int i = 0; i < n; i++) { //til 75 meth
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 boardChar[i][j] = NO_SHIP;
             }
@@ -444,6 +446,7 @@ public class Main {
     public static void battleshipGame() {
         int numOfShips = 0;
         int[] arr = getBoard();
+
         int n = arr[arr.length-2];
         int m = arr[arr.length-1];
         int[] arrShips = new int[arr.length-2];
@@ -477,8 +480,8 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        String path = args[0];
-        scanner = new Scanner(new File(path));
+        //String path = args[0];
+        scanner = new Scanner(System.in/*new File(path)*/);
         int numberOfGames = scanner.nextInt();
         scanner.nextLine();
 
