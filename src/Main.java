@@ -16,11 +16,19 @@ public class Main {
     public static void getBoard(){
         System.out.println("Enter the board size");
         String size = scanner.nextLine();
-        int n = (int)size.charAt(0)-ZERO_ASCII;
-        int m = (int)size.charAt(2)-ZERO_ASCII;
+        String[] newSize = size.split("X");
+        int n = (int)(newSize[0].charAt(0)) - ZERO_ASCII;
+        int m = (int)(newSize[1].charAt(0)) - ZERO_ASCII;
         System.out.println("Enter the battleships sizes");
         String battleships = scanner.nextLine();
         int max = 0;
+        String[] sizes = battleships.split(" ");
+        int[][] newSizes = new int[sizes.length][2];
+        for(int i = 0; i < sizes.length; i++){
+            String[] temp = sizes[i].split("X");
+            newSizes[i][0] = (int)(temp[0].charAt(0))-ZERO_ASCII;
+            newSizes[i][1] = (int)(temp[1].charAt(0))-ZERO_ASCII;
+        }
         for(int i = 2; i < battleships.length(); i+=4){
             if(max < battleships.charAt(i))
                 max = battleships.charAt(i);
