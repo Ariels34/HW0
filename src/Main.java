@@ -17,8 +17,8 @@ public class Main {
 
 
     /**
-     * This method gets the board and the battleships amount and sizes
-     * and calls shipLocation method
+     * gets the board and the battleships amount and sizes from user
+     * @return int array that contains the sizes and amount of ships
      */
     public static int[] getBoard(){
         System.out.println("Enter the board size");
@@ -259,6 +259,13 @@ public class Main {
     }
 
 
+    /**
+     * places the user's ships according to the location the user inserts
+     * @param arrShips sizes and amount of ships
+     * @param n num of row in board
+     * @param m num of columns in board
+     * @return char[][] board - updated user's game board with the ship
+     */
     public static char[][] shipLocation(int[] arrShips, int n, int m) {
         char[][] boardChar = initializeBoard(n,m);
         System.out.println("Your current game board:");
@@ -318,6 +325,13 @@ public class Main {
         return boardChar;
     }
 
+    /**
+     * places the computer's ships randomly
+     * @param arrShips sizes and amount of ships
+     * @param n num of row in board
+     * @param m num of columns in board
+     * @return char[][] board - updated computer's game board with the ship
+     */
     public static char[][] shipLocationComputer(int[] arrShips, int n, int m) {
         char[][] boardChar = initializeBoard(n,m);
 
@@ -368,6 +382,15 @@ public class Main {
     }
 
 
+    /**
+     * simulates the user's turn - guessing and attacking
+     * @param guessingBoardPlayer the guessing board of the player
+     * @param gameBoardComputer the game board of the computer
+     * @param n num of rows in board
+     * @param m num of columns in board
+     * @param numOfShips num of ships in current game
+     * @return updated num of ships
+     */
     public static int playerTurn(char[][] guessingBoardPlayer, char[][] gameBoardComputer, int n, int m, int numOfShips) {
         int flag = 0;
         int x = 0,y = 0;
@@ -403,10 +426,28 @@ public class Main {
     }
 
 
+    /**
+     * checks if the ship has already been attacked
+     * @param guessingBoard the guessing board we are checking
+     * @param x index of rows
+     * @param y index of columns
+     * @return true if te ship has already been attacked, false otherwise
+     */
     public static boolean alreadyAttacked(char[][] guessingBoard, int x, int y){
         return guessingBoard[x][y] == HIT_GUESSING || guessingBoard[x][y] == MISS_GUESSING;
     }
 
+    /**
+     * checks if the guess is a hit or a miss, and if the attacked ship drowned
+     * @param gameBoard the game board we are checking
+     * @param x index of rows
+     * @param y index of columns
+     * @param n num of rows in board
+     * @param m num of columns in board
+     * @param numOfShips num of ships in current game
+     * @param isPlayer - flag is true if the player called the method, false otherwise
+     * @return 0 if it's a miss, 1 if it's a hit, 2 if it's a hit and the ship has drowned
+     */
     public static int hitOrMiss(char[][] gameBoard, int x, int y, int n, int m, int numOfShips, boolean isPlayer){
         if(gameBoard[x][y] == SHIP){
             gameBoard[x][y] = HIT_PLAYER;
@@ -428,6 +469,15 @@ public class Main {
         }
     }
 
+    /**
+     * checks if there is a ship left in all directions surrounding the current sell
+     * @param gameBoard the current game board we are checking
+     * @param x index of rows
+     * @param y index of columns
+     * @param n num of rows in board
+     * @param m num of columns in board
+     * @return true if there is a ship left, false otherwise
+     */
     public static boolean shipLeft(char[][] gameBoard, int x, int y, int n, int m){
         int up = x-1, down =x+1;
         int left = y-1, right = y+1;
@@ -435,11 +485,6 @@ public class Main {
         boolean leftFlag = false;
         boolean upFlag = false;
         boolean downFlag = false;
-        /*if(inBounds(up, y, n, m) && inBounds(down, y, n, m) && inBounds(x, left, n, m) && inBounds(x, right, n, m) &&
-        gameBoard[up][y] != SHIP && gameBoard[down][y] != SHIP &&
-                gameBoard[x][left] != SHIP && gameBoard[x][right] != SHIP){
-            return false;
-        }*/
 
         if(inBounds(up, y, n, m) && gameBoard[up][y] != NO_SHIP){
             upFlag = true;
@@ -488,6 +533,15 @@ public class Main {
         return true;
     }
 
+    /**
+     * simulates the computer's turn - guessing and attacking
+     * @param guessingBoardComputer updated guessing board of the computer
+     * @param gameBoardPlayer updated game board of the player
+     * @param n num of rows in board
+     * @param m num of columns in board
+     * @param numOfShips num of ships in current game
+     * @return updated num of ships
+     */
     public static int computerTurn(char[][] guessingBoardComputer, char[][] gameBoardPlayer, int n, int m, int numOfShips){
         int flag = 0;
         int x = 0,y = 0;
@@ -514,10 +568,13 @@ public class Main {
     }
 
 
+    /**
+     * simulates the battleship game
+     */
     public static void battleshipGame() {
+        /* getting the sizes ad amount of ships */
         int numOfShips = 0;
         int[] arr = getBoard();
-
         int n = arr[arr.length-2];
         int m = arr[arr.length-1];
         int[] arrShips = new int[arr.length-2];
@@ -527,16 +584,19 @@ public class Main {
         }
         int numOfShipsComputer = numOfShips;
         int numOfShipsPlayer = numOfShips;
+        /* initializing all game and guessing boards */
         char[][] gameBoardPlayer = shipLocation(arrShips, n, m);
         char[][] gameBoardComputer = shipLocationComputer(arrShips, n, m);
         char[][] guessingBoardPlayer = initializeBoard(n,m);
         char[][] guessingBoardComputer = initializeBoard(n,m);
         while(true) {
+            /* the player plays his turn */
             numOfShipsComputer = playerTurn(guessingBoardPlayer, gameBoardComputer, n, m, numOfShipsComputer);
             if (numOfShipsComputer == 0) {
                 System.out.println("You won the game!");
                 break;
             }
+            /* the computer plays his turn */
             numOfShipsPlayer = computerTurn(guessingBoardComputer, gameBoardPlayer, n, m, numOfShipsPlayer);
             if (numOfShipsPlayer == 0) {
                 System.out.println("Your current game board:");
